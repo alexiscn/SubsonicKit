@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Song: Codable, Hashable {
+public class Song: Codable, Hashable {
     
     public let id: String
     public let parent: String?
@@ -29,4 +29,13 @@ public struct Song: Codable, Hashable {
     public let duration: Int?
     public let bitRate: Int?
     public let discNumber: Int?
+    public var starred: String?
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    public static func == (lhs: Song, rhs: Song) -> Bool {
+        return lhs.id == rhs.id
+    }
 }

@@ -578,10 +578,69 @@ public class SubsonicClient {
         return try await request(path: "scrobble", params: params)
     }
     
-    public func getNewestPodcasts(count: Int = 20) async throws -> EmptyResponse {
+    
+    /// Returns all Podcast channels the server subscribes to, and (optionally) their episodes. This method can also be used to return details for only one channel - refer to the id parameter. A typical use case for this method would be to first retrieve all channels without episodes, and then retrieve all episodes for the single channel the user selects.
+    /// - Parameters:
+    ///   - includeEpisodes: (Since 1.9.0) Whether to include Podcast episodes in the returned result.
+    ///   - id: (Since 1.9.0) If specified, only return the Podcast channel with this ID.
+    /// - Returns: Returns a `PodcastsResponse` element with a nested `podcasts` element on success.
+    public func getPodcasts(includeEpisodes: Bool? = nil, id: String? = nil) async throws -> PodcastsResponse {
+        var params = [String: Any]()
+        if let includeEpisodes = includeEpisodes {
+            params["includeEpisodes"] = includeEpisodes
+        }
+        if let id = id {
+            params["id"] = id
+        }
+        return try await request(path: "getPodcasts", params: params)
+    }
+    
+    /// Returns the most recently published Podcast episodes.
+    /// - Parameter count: The maximum number of episodes to return.
+    /// - Returns: Returns a `NewestPodcastsResponse` element with a nested `newestPodcasts` element on success.
+    public func getNewestPodcasts(count: Int = 20) async throws -> NewestPodcastsResponse {
         return try await request(path: "getNewestPodcasts", params: ["count": count])
     }
     
+    /// Requests the server to check for new Podcast episodes. Note: The user must be authorized for Podcast administration (see Settings > Users > User is allowed to administrate Podcasts).
+    /// - Returns: Returns an empty `EmptyResponse` element on success.
+    public func refreshPodcasts() async throws -> EmptyResponse {
+        return try await request(path: "refreshPodcasts")
+    }
+    
+    /// Adds a new Podcast channel. Note: The user must be authorized for Podcast administration (see Settings > Users > User is allowed to administrate Podcasts).
+    /// - Parameter url: The URL of the Podcast to add.
+    /// - Returns: Returns an empty `EmptyResponse` element on success.
+    public func createPodcastChannel(url: String) async throws -> EmptyResponse {
+        return try await request(path: "createPodcastChannel", params: ["url": url])
+    }
+    
+    /// Deletes a Podcast channel. Note: The user must be authorized for Podcast administration (see Settings > Users > User is allowed to administrate Podcasts).
+    /// - Parameter id: The ID of the Podcast channel to delete.
+    /// - Returns: Returns an empty `EmptyResponse` element on success.
+    public func deletePodcastChannel(id: String) async throws -> EmptyResponse {
+        return try await request(path: "deletePodcastChannel", params: ["id": id])
+    }
+    
+    /// Deletes a Podcast episode. Note: The user must be authorized for Podcast administration (see Settings > Users > User is allowed to administrate Podcasts).
+    /// - Parameter id: The ID of the Podcast episode to delete.
+    /// - Returns: Returns an empty `EmptyResponse` element on success.
+    public func deletePodcastEpisode(id: String) async throws -> EmptyResponse {
+        return try await request(path: "deletePodcastEpisode", params: ["id": id])
+    }
+    
+    /// Request the server to start downloading a given Podcast episode. Note: The user must be authorized for Podcast administration (see Settings > Users > User is allowed to administrate Podcasts).
+    /// - Parameter id: The ID of the Podcast episode to download.
+    /// - Returns: Returns an empty `EmptyResponse` element on success.
+    public func downloadPodcastEpisode(id: String) async throws -> EmptyResponse {
+        return try await request(path: "downloadPodcastEpisode", params: ["id": id])
+    }
+    
+    /// Returns all internet radio stations. Takes no extra parameters.
+    /// - Returns: Returns a   `InternetRadioStationsResponse` element with a nested `internetRadioStations` element on success.
+    public func getInternetRadioStations() async throws -> EmptyResponse {
+        return try await request(path: "getInternetRadioStations")
+    }
     
     /// Get details about a given user, including which authorization roles and folder access it has. Can be used to enable/disable certain features in the client, such as jukebox control.
     /// - Parameter username: The name of the user to retrieve. You can only retrieve your own user unless you have admin privileges.

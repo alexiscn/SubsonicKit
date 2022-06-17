@@ -41,3 +41,10 @@ extension Digest {
         map { String(format: "%02x", $0) }.joined()
     }
 }
+
+extension Sequence where Iterator.Element: Hashable {
+    public func uniqued() -> [Iterator.Element] {
+        var seen: Set<Iterator.Element> = []
+        return filter { seen.insert($0).inserted }
+    }
+}

@@ -9,4 +9,6 @@ import Foundation
 
 public enum AlbumListType: String {
     case random, newest, highest, frequent, recent
+    case alphabeticalByName
+    case alphabeticalByArtist
 }
