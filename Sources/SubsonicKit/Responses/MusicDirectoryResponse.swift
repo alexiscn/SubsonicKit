@@ -19,5 +19,5 @@ public struct MusicDirectoryResponse: Response {
     
     public var error: SubsonicError?
     
-    
+    public let directory: Directory
 }
